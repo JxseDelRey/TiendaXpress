@@ -1,0 +1,193 @@
+/*
+ * TiendaXpress — Premium Design System
+ * Font: Inter (loaded in index.html)
+ * Dark mode: class-based (toggled in TheNavbar.vue)
+ * Tailwind: custom utilities defined below
+ */
+
+/* ── Global reset & base ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  @apply bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-50 transition-colors duration-300;
+}
+
+/* Dark mode class activation */
+@layer base {
+  .dark {
+    color-scheme: dark;
+  }
+
+  /* Smooth scrolling */
+  html { scroll-behavior: smooth; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════════════════════ */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2
+    px-5 py-2.5 rounded-xl
+    font-semibold text-sm text-white
+    bg-gradient-to-br from-primary-500 to-primary-600
+    shadow-[0_2px_8px_rgba(255,107,53,0.35)]
+    hover:shadow-[0_4px_16px_rgba(255,107,53,0.45)]
+    hover:-translate-y-px
+    active:translate-y-0 active:scale-[0.97]
+    transition-all duration-200
+    disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2
+    px-5 py-2.5 rounded-xl
+    border border-gray-200 dark:border-gray-700
+    font-semibold text-sm
+    text-gray-700 dark:text-gray-200
+    bg-white dark:bg-gray-800
+    hover:bg-gray-50 dark:hover:bg-gray-700
+    hover:border-gray-300 dark:hover:border-gray-600
+    hover:-translate-y-px
+    active:translate-y-0 active:scale-[0.97]
+    transition-all duration-200;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-1.5
+    px-3 py-2 rounded-lg
+    text-sm font-medium
+    text-gray-600 dark:text-gray-400
+    hover:text-gray-900 dark:hover:text-gray-100
+    hover:bg-gray-100 dark:hover:bg-gray-800
+    active:scale-[0.97]
+    transition-all duration-150;
+}
+
+.btn-sm {
+  @apply !px-3.5 !py-1.5 !text-xs !rounded-lg;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   CARDS
+══════════════════════════════════════════════════════════════ */
+.card {
+  @apply bg-white dark:bg-gray-900
+    border border-gray-200 dark:border-gray-800
+    rounded-2xl
+    shadow-card;
+}
+
+.card-elevated {
+  @apply bg-white dark:bg-gray-900
+    border border-gray-200 dark:border-gray-700
+    rounded-2xl
+    shadow-elevated;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FORMS
+══════════════════════════════════════════════════════════════ */
+.input {
+  @apply block w-full
+    px-3.5 py-2.5 rounded-xl
+    border border-gray-200 dark:border-gray-700
+    bg-white dark:bg-gray-800
+    text-gray-900 dark:text-gray-50
+    text-sm
+    placeholder:text-gray-400 dark:placeholder:text-gray-500
+    outline-none
+    focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20
+    transition-all duration-150;
+}
+
+.input-sm {
+  @apply !px-3 !py-2 !text-sm !rounded-lg;
+}
+
+.label {
+  @apply block text-xs font-semibold
+    text-gray-500 dark:text-gray-400
+    uppercase tracking-wide mb-1.5;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BADGES
+══════════════════════════════════════════════════════════════ */
+.badge {
+  @apply inline-flex items-center gap-1
+    px-2.5 py-0.5
+    rounded-full text-xs font-semibold;
+}
+
+.badge-primary {
+  @apply bg-primary-50 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400;
+}
+
+.badge-success {
+  @apply bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400;
+}
+
+.badge-danger {
+  @apply bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400;
+}
+
+.badge-warning {
+  @apply bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400;
+}
+
+.badge-gray {
+  @apply bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+══════════════════════════════════════════════════════════════ */
+.section-title {
+  @apply text-2xl font-bold tracking-tight
+    text-gray-900 dark:text-white;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   LAYOUT UTILITIES
+══════════════════════════════════════════════════════════════ */
+.gradient-primary {
+  background: linear-gradient(135deg, #FF6B35 0%, #F05A28 100%);
+}
+
+.hover-lift {
+  @apply transition-all duration-300 cursor-pointer;
+}
+.hover-lift:hover {
+  @apply -translate-y-1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SCROLLBAR (minimal WebKit)
+══════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-200 dark:bg-gray-700 rounded-full;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   FOCUS VISIBLE (keyboard navigation)
+══════════════════════════════════════════════════════════════ */
+:focus-visible {
+  @apply outline-2 outline-primary-500 outline-offset-2;
+}
+a:focus-visible, button:focus-visible {
+  @apply rounded-lg;
+}

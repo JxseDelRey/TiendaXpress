@@ -31,8 +31,19 @@ async function bootstrap() {
     prefix: '/public/',
   });
 
+  // ... (tus imports y configuraciones anteriores)
+
   const port = process.env.PORT || 3000;
-  await app.listen(port);
-  console.log(`🚀 TiendaXpress API corriendo en: http://localhost:${port}/api`);
+  
+  // Condición para evitar que el listen bloquee a Vercel
+  if (process.env.NODE_ENV !== 'production') {
+    await app.listen(port);
+    console.log(`🚀 TiendaXpress API corriendo en: http://localhost:${port}/api`);
+  }
+
+  // Esto es CLAVE para que Vercel pueda manejar las peticiones
+  return app.getHttpAdapter().getInstance();
 }
-bootstrap();
+
+// Exportamos la promesa de la aplicación
+export const handler = bootstrap();

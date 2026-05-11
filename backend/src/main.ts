@@ -7,12 +7,19 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Habilitar CORS para el frontend Vue
+  // Configuración de CORS actualizada
   app.enableCors({
-    origin: ['http://localhost:5173', 'http://localhost:3001'],
+    
+    origin: [
+      'http://localhost:5173', 
+      'http://localhost:3001',
+      'https://tienda-xpress-hfks.vercel.app', // URL de tu frontend en Vercel
+      /\.vercel\.app$/                        // Esto permite cualquier subdominio de vercel.app (muy útil)
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
   });
+  app.setGlobalPrefix('api');
 
   // Validación global de DTOs
   app.useGlobalPipes(
@@ -23,8 +30,6 @@ async function bootstrap() {
     }),
   );
 
-  // Prefijo global de la API
-  app.setGlobalPrefix('api');
 
   // Servir archivos estáticos
   app.useStaticAssets(join(__dirname, '..', 'public'), {

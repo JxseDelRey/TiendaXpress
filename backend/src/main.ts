@@ -1,27 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create(AppModule);
 
-  // Configuración de CORS actualizada
-  app.enableCors({
-    
-    origin: [
-      'http://localhost:5173', 
-      'http://localhost:3001',
-      'https://tienda-xpress-hfks.vercel.app', // URL de tu frontend en Vercel
-      /\.vercel\.app$/                        // Esto permite cualquier subdominio de vercel.app (muy útil)
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true,
-  });
+  // CORS abierto para que tu frontend en Vercel pueda conectar
+  app.enableCors();
+
   app.setGlobalPrefix('api');
 
-  // Validación global de DTOs
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -30,25 +18,8 @@ async function bootstrap() {
     }),
   );
 
-
-  // Servir archivos estáticos
-  app.useStaticAssets(join(__dirname, '..', 'public'), {
-    prefix: '/public/',
-  });
-
-  // ... (tus imports y configuraciones anteriores)
-
-  const port = process.env.PORT || 3000;
-  
-  // Condición para evitar que el listen bloquee a Vercel
-  if (process.env.NODE_ENV !== 'production') {
-    await app.listen(port);
-    console.log(`🚀 TiendaXpress API corriendo en: http://localhost:${port}/api`);
-  }
-
-  // Esto es CLAVE para que Vercel pueda manejar las peticiones
-  return app.getHttpAdapter().getInstance();
+  // Railway asigna el puerto automáticamente mediante la variable PORT
+  await app.listen(process.env.PORT || 3000);
+  console.log(`🚀 Application is running on: ${await app.getUrl()}`);
 }
-
-// Exportamos la promesa de la aplicación
-export const handler = bootstrap();
+bootstrap();

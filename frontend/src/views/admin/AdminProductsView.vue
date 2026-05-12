@@ -233,9 +233,8 @@ async function uploadLocalImage(event) {
   uploadLoading.value = true
   try {
     const { data } = await uploadsApi.uploadImage(file)
-    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-    const fullUrl = `${backendUrl}${data.url}`
-    form.value.images.push(fullUrl)
+    // Cloudinary devuelve la URL completa directamente, no hay que concatenar nada
+    form.value.images.push(data.url)
   } catch (error) {
     alert('Error al subir imagen')
   } finally {

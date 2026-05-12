@@ -1,7 +1,9 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  // 1. Agregamos https:// 
+  // 2. Agregamos /api al final (asegúrate que tu backend lo use)
+  baseURL: 'https://tiendaxpress-production.up.railway.app/api', 
   timeout: 10000,
   headers: { 'Content-Type': 'application/json' },
 })

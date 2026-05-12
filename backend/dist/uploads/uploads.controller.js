@@ -48,44 +48,56 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UploadsController = void 0;
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
-const multer_1 = require("multer");
-const path_1 = require("path");
 const auth_guard_1 = require("../auth/guards/auth.guard");
 const core_1 = require("@nestjs/core");
-const fs = __importStar(require("fs"));
+const config_1 = require("@nestjs/config");
+const cloudinary_1 = require("cloudinary");
+const streamifier = __importStar(require("streamifier"));
 let UploadsController = class UploadsController {
-    uploadFile(file) {
-        return {
-            url: `/public/uploads/${file.filename}`
-        };
+    configService;
+    constructor(configService) {
+        this.configService = configService;
+        cloudinary_1.v2.config({
+            cloud_name: this.configService.get('CLOUDINARY_CLOUD_NAME'),
+            api_key: this.configService.get('CLOUDINARY_API_KEY'),
+            api_secret: this.configService.get('CLOUDINARY_API_SECRET'),
+        });
+    }
+    async uploadFile(file) {
+        if (!file) {
+            throw new common_1.HttpException('No se subió ningún archivo', common_1.HttpStatus.BAD_REQUEST);
+        }
+        try {
+            const uploadResult = await new Promise((resolve, reject) => {
+                const uploadStream = cloudinary_1.v2.uploader.upload_stream({ folder: 'tiendaxpress_productos' }, (error, result) => {
+                    if (error)
+                        return reject(error);
+                    resolve(result);
+                });
+                streamifier.createReadStream(file.buffer).pipe(uploadStream);
+            });
+            return {
+                url: uploadResult.secure_url
+            };
+        }
+        catch (error) {
+            console.error('Error con cloudinary: ', error);
+            throw new common_1.HttpException('Error subiendo imagen a la nube', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 };
 exports.UploadsController = UploadsController;
 __decorate([
     (0, common_1.Post)(),
     (0, common_1.UseGuards)(new auth_guard_1.AdminGuard(new core_1.Reflector())),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
-        storage: (0, multer_1.diskStorage)({
-            destination: (req, file, cb) => {
-                const uploadPath = './public/uploads';
-                if (!fs.existsSync(uploadPath)) {
-                    fs.mkdirSync(uploadPath, { recursive: true });
-                }
-                cb(null, uploadPath);
-            },
-            filename: (req, file, cb) => {
-                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                const ext = (0, path_1.extname)(file.originalname);
-                cb(null, `${uniqueSuffix}${ext}`);
-            }
-        })
-    })),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file')),
     __param(0, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UploadsController.prototype, "uploadFile", null);
 exports.UploadsController = UploadsController = __decorate([
-    (0, common_1.Controller)('uploads')
+    (0, common_1.Controller)('uploads'),
+    __metadata("design:paramtypes", [config_1.ConfigService])
 ], UploadsController);
 //# sourceMappingURL=uploads.controller.js.map
